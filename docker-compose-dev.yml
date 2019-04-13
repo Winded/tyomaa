@@ -1,0 +1,14 @@
+version: '3.6'
+services:
+  tyomaa-frontend:
+    container_name: tyomaa-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-dev
+    ports:
+     - "8000:8000"
+    environment:
+      API_ENDPOINT: "http://localhost:9000/api"
+    volumes:
+     - ./frontend/src:/usr/src/app/src:rw
+     - ./frontend/static:/usr/src/app/static:rw
