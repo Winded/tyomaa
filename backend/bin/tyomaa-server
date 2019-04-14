@@ -1,0 +1,2 @@
+#!/bin/env node
+require('../dist/src/app').runApp(parseInt(process.env.PORT) || 80);

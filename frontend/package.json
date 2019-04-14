@@ -4,7 +4,7 @@
   "description": "Web frontend for tyomaa",
   "main": "dist/www/bundle.js",
   "scripts": {
-    "dev": "node_modules/.bin/webpack-dev-server --config webpack.config.js --progress --inline --colors --hot",
+    "debug": "node_modules/.bin/webpack-dev-server --config webpack.config.js --progress --colors --hot --mode development",
     "test": "node_modules/.bin/mocha dist/tests"
   },
   "repository": {
