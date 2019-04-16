@@ -1,7 +1,7 @@
 version: '3.6'
 services:
   tyomaa-frontend:
-    container_name: tyomaa-frontend
+    image: winded/tyomaa-frontend:latest
     build:
       context: ./frontend
       dockerfile: Dockerfile-dev
@@ -14,15 +14,27 @@ services:
      - ./frontend/static:/usr/src/app/static:rw
      - ./frontend/dist:/usr/src/app/dist:rw
   tyomaa-backend:
-    container_name: tyomaa-backend
+    image: winded/tyomaa-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile-dev
     ports:
      - "9000:80"
     environment:
-      PORT: "80"
+     - DB_HOST=db
     volumes:
      - ./backend/src:/usr/src/app/src:rw
      - ./backend/tests:/usr/src/app/tests:rw
      - ./backend/dist:/usr/src/app/dist:rw
+
+  db:
+    image: postgres:alpine
+    environment:
+     - POSTGRES_DB=tyomaa
+     - POSTGRES_USER=tyomaa
+     - POSTGRES_PASSWORD=tyomaa
+    volumes:
+     - db-data:/var/lib/postgresql/data:rw
+
+volumes:
+  db-data:
