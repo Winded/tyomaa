@@ -1,5 +1,6 @@
 import { Model, Table, Column, HasMany, DataType } from 'sequelize-typescript';
 import { TimeEntry } from './time-entry';
+import { nameIdentifierRegExp } from '../util/identity';
 
 @Table
 export class User extends Model<User> {
@@ -17,7 +18,16 @@ export class User extends Model<User> {
         allowNull: false, 
         unique: true 
     })
-    name: string;
+    get name(): string {
+        return this.getDataValue('name');
+    }
+
+    set name(value: string) {
+        if (!nameIdentifierRegExp.test(value)) {
+            throw new EvalError('Name must only contain alphabetic characters, numbers and dashes');
+        }
+        this.setDataValue('name', value);
+    }
 
     @Column({
         type: DataType.STRING,
