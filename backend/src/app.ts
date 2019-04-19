@@ -1,11 +1,15 @@
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
 import { sequelize } from './db/index';
+import { tokenMiddleware } from './util/token';
+import authRouter from './routes/auth';
 
 let app = express();
 
-app.get('/', (req, res, next) => {
-    res.send({ message: 'asddddd!' });
-});
+app.use(bodyParser.json());
+app.use(tokenMiddleware);
+
+app.use('/auth', authRouter);
 
 export async function runApp(): Promise<void> {
     let port = parseInt(process.env.PORT) || 80;

@@ -14,12 +14,13 @@
   "author": "Antton Hytönen",
   "license": "MIT",
   "devDependencies": {
+    "webpack-dev-server": "^3.3.1"
+  },
+  "dependencies": {
     "file-loader": "^3.0.1",
     "ts-loader": "^5.3.3",
     "typescript": "^3.4.3",
     "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.0",
-    "webpack-dev-server": "^3.3.1"
-  },
-  "dependencies": {}
+    "webpack-cli": "^3.3.0"
+  }
 }
