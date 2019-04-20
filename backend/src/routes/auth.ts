@@ -4,11 +4,22 @@ import { authenticateUser, createToken } from '../services/auth';
 
 const router = Router();
 
-router.get('/token', async (req, res, next) => {
-    res.send({ userId: req.session ? req.session.userId : null });
+router.get('/token', async (req, res, _next) => {
+    let user: object = null;
+    if(req.session.user) {
+        user = {
+            id: req.session.user.id,
+            name: req.session.user.name,
+        };
+    }
+
+    res.send({
+        token: req.session.token ? req.session.token : null,
+        user: user,
+    });
 });
 
-router.post('/token', async (req, res, next) => {
+router.post('/token', async (req, res, _next) => {
     let username = req.body.username;
     let password = req.body.password;
 

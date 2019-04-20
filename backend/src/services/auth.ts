@@ -22,3 +22,7 @@ export function createToken(user: User): string {
         userId: user.id,
     });
 }
+
+export async function hashPassword(password: string): Promise<string> {
+    return await bcrypt.hash(password, 10);
+}
