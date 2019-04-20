@@ -5,6 +5,7 @@ import { tokenSession } from './middleware/token';
 import { authentication, authorization } from './middleware/auth';
 import authRouter from './routes/auth';
 import entriesRouter from './routes/entries';
+import clockRouter from './routes/clock';
 import { User } from './db/user';
 
 interface SessionData {
@@ -36,6 +37,7 @@ baseRouter.use(authentication);
 baseRouter.use('/auth', authRouter);
 baseRouter.use(authorization);
 baseRouter.use('/entries', entriesRouter);
+baseRouter.use('/clock', clockRouter);
 
 app.use(process.env.ROOT_URL || '', baseRouter);
 
