@@ -2,6 +2,10 @@ import { Sequelize, SequelizeOptions } from 'sequelize-typescript';
 import { User } from './user';
 import { TimeEntry } from './time-entry';
 
+export interface IApiFormattable<T> {
+    toApiFormat(): T;
+}
+
 export const sequelize = new Sequelize({
     dialect: process.env.DB_IN_MEMORY ? 'sqlite' : 'postgres',
     storage: process.env.DB_IN_MEMORY ? ':memory:' : undefined,

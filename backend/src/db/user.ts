@@ -1,10 +1,11 @@
 import { Model, Table, Column, HasMany, DataType } from 'sequelize-typescript';
 import { TimeEntry } from './time-entry';
-import { nameIdentifierRegExp } from '../util/identity';
+import { validateNameIdentifier } from '../util/identity';
 import ApiUser from '../../../shared/api/user';
+import { IApiFormattable } from '.';
 
 @Table
-export class User extends Model<User> {
+export class User extends Model<User> implements IApiFormattable<ApiUser> {
     @Column({
         type: DataType.INTEGER,
         primaryKey: true,
@@ -24,7 +25,7 @@ export class User extends Model<User> {
     }
 
     set name(value: string) {
-        if (!nameIdentifierRegExp.test(value)) {
+        if (!validateNameIdentifier(value)) {
             throw new EvalError('Name must only contain alphabetic characters, numbers and dashes');
         }
         this.setDataValue('name', value);

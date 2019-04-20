@@ -4,6 +4,7 @@ import { sequelize } from './db/index';
 import { tokenSession } from './middleware/token';
 import { authentication, authorization } from './middleware/auth';
 import authRouter from './routes/auth';
+import entriesRouter from './routes/entries';
 import { User } from './db/user';
 
 interface SessionData {
@@ -34,6 +35,7 @@ const baseRouter = express.Router();
 baseRouter.use(authentication);
 baseRouter.use('/auth', authRouter);
 baseRouter.use(authorization);
+baseRouter.use('/entries', entriesRouter);
 
 app.use(process.env.ROOT_URL || '', baseRouter);
 

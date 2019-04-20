@@ -1,9 +1,11 @@
 import { Model, Table, Column, ForeignKey, BelongsTo, DataType } from 'sequelize-typescript';
+import { IApiFormattable } from './index';
 import { User } from './user';
-import { nameIdentifierRegExp } from '../util/identity';
+import { validateNameIdentifier } from '../util/identity';
+import ApiEntry from '../../../shared/api/entry';
 
 @Table
-export class TimeEntry extends Model<TimeEntry> {
+export class TimeEntry extends Model<TimeEntry> implements IApiFormattable<ApiEntry> {
     @Column({
         type: DataType.INTEGER,
         primaryKey: true,
@@ -29,7 +31,7 @@ export class TimeEntry extends Model<TimeEntry> {
     }
 
     set project(value: string) {
-        if (!nameIdentifierRegExp.test(value)) {
+        if (!validateNameIdentifier(value)) {
             throw new EvalError('Name must only contain alphabetic characters, numbers and dashes');
         }
         this.setDataValue('project', value);
@@ -48,4 +50,13 @@ export class TimeEntry extends Model<TimeEntry> {
 
     @BelongsTo(() => User)
     user: User;
+
+    toApiFormat(): ApiEntry {
+        return {
+            id: this.id,
+            project: this.project,
+            start: this.start,
+            end: this.end,
+        };
+    }
 }

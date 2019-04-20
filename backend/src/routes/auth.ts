@@ -1,12 +1,14 @@
 import { Router } from 'express';
-import { check, validationResult } from 'express-validator/check';
+import { body } from 'express-validator/check';
 import { authenticateUser, createToken } from '../services/auth';
 import { TokenGetResponse, TokenPostRequest, TokenPostResponse } from '../../../shared/api/auth';
 import { Error as ApiError } from '../../../shared/api/error';
+import { validateNameIdentifier } from '../util/identity';
+import { validateInput } from '../util/validation';
 
 const router = Router();
 
-router.get('/token', async (req, res, _next) => {
+router.get('/token', (req, res, _next) => {
     res.send(<TokenGetResponse>{
         token: req.session.token ? req.session.token : null,
         user: req.session.user ? req.session.user.toApiFormat() : null,
@@ -14,12 +16,10 @@ router.get('/token', async (req, res, _next) => {
 });
 
 router.post('/token', [
-    check('username').not().isEmpty(),
-    check('password').not().isEmpty(),
+    body('username').exists().custom(validateNameIdentifier),
+    body('password').exists(),
 ], async (req, res, _next) => {
-    let errors = validationResult(req);
-    if(!errors.isEmpty()) {
-        res.status(422).send({ errors: errors.array() });
+    if(!validateInput(req, res)) {
         return;
     }
     
