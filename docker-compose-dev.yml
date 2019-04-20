@@ -23,6 +23,7 @@ services:
     environment:
      - DB_HOST=db
     volumes:
+     - ./shared:/usr/src/shared:ro
      - ./backend/src:/usr/src/app/src:rw
      - ./backend/tests:/usr/src/app/tests:rw
      - ./backend/dist:/usr/src/app/dist:rw

@@ -18,8 +18,7 @@ export async function authentication(request: Request, _response: Response, next
 
 export async function authorization(request: Request, response: Response, next: NextFunction) {
     if(!request.session.user) {
-        response.status(403);
-        response.send({ message: 'Not logged in' });
+        response.status(403).send({ message: 'Invalid token' });
         return;
     }
 

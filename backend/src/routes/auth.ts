@@ -1,33 +1,33 @@
 import { Router } from 'express';
-import * as token from '../util/token';
+import { check, validationResult } from 'express-validator/check';
 import { authenticateUser, createToken } from '../services/auth';
+import { TokenGetResponse, TokenPostRequest, TokenPostResponse } from '../../../shared/api/auth';
+import { Error as ApiError } from '../../../shared/api/error';
 
 const router = Router();
 
 router.get('/token', async (req, res, _next) => {
-    let user: object = null;
-    if(req.session.user) {
-        user = {
-            id: req.session.user.id,
-            name: req.session.user.name,
-        };
-    }
-
-    res.send({
+    res.send(<TokenGetResponse>{
         token: req.session.token ? req.session.token : null,
-        user: user,
+        user: req.session.user ? req.session.user.toApiFormat() : null,
     });
 });
 
-router.post('/token', async (req, res, _next) => {
-    let username = req.body.username;
-    let password = req.body.password;
+router.post('/token', [
+    check('username').not().isEmpty(),
+    check('password').not().isEmpty(),
+], async (req, res, _next) => {
+    let errors = validationResult(req);
+    if(!errors.isEmpty()) {
+        res.status(422).send({ errors: errors.array() });
+        return;
+    }
+    
+    let body = req.body as TokenPostRequest;
 
-    let user = await authenticateUser(username, password);
+    let user = await authenticateUser(body.username, body.password);
     if(!user) {
-        res.send({
-            success: false,
-            token: null,
+        res.status(400).send(<ApiError>{
             message: 'Invalid username or password',
         });
         return;
@@ -35,8 +35,7 @@ router.post('/token', async (req, res, _next) => {
 
     let t = createToken(user);
 
-    res.send({
-        success: true,
+    res.send(<TokenPostResponse>{
         token: t,
         message: 'Authentication successful',
     });

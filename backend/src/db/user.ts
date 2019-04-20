@@ -1,6 +1,7 @@
 import { Model, Table, Column, HasMany, DataType } from 'sequelize-typescript';
 import { TimeEntry } from './time-entry';
 import { nameIdentifierRegExp } from '../util/identity';
+import ApiUser from '../../../shared/api/user';
 
 @Table
 export class User extends Model<User> {
@@ -37,4 +38,11 @@ export class User extends Model<User> {
 
     @HasMany(() => TimeEntry)
     entries: TimeEntry[];
+
+    toApiFormat(): ApiUser {
+        return {
+            id: this.id,
+            name: this.name,
+        };
+    }
 }
