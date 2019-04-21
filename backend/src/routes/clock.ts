@@ -5,6 +5,7 @@ import { validateNameIdentifier } from "../util/identity";
 import { TimeEntry } from "../db/time-entry";
 import { Error as ApiError } from '../../../shared/api/error';
 import { ClockGetResponse, ClockStartPostRequest } from '../../../shared/api/clock';
+import * as cache from "../util/cache";
 
 const router = Router();
 
@@ -49,6 +50,8 @@ router.post('/start', [
     activeEntry.start = new Date();
     await activeEntry.save();
 
+    cache.clear(req.session.user.id);
+
     res.send(<ClockGetResponse>{
         entry: activeEntry.toApiFormat(),
     });
@@ -70,6 +73,8 @@ router.post('/stop', async (req: Request, res: Response) => {
     
     activeEntry.end = new Date();
     await activeEntry.save();
+
+    cache.clear(req.session.user.id);
 
     res.send(<ClockGetResponse>{
         entry: activeEntry.toApiFormat(),

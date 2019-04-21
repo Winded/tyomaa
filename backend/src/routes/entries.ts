@@ -5,6 +5,7 @@ import { Error as ApiError } from '../../../shared/api/error';
 import { body, param } from 'express-validator/check';
 import { validateNameIdentifier } from '../util/identity';
 import { validateInput } from '../util/validation';
+import * as cache from '../util/cache';
 
 const router = Router();
 
@@ -42,6 +43,8 @@ router.post('/', [
     entry.start =body.start;
     entry.end =body.end;
     await entry.save();
+
+    cache.clear(req.session.user.id);
 
     res.send(<EntriesPostResponse>{
         entry: entry.toApiFormat(),
@@ -105,6 +108,8 @@ router.put('/:entryId', [
     entry.start = body.start;
     entry.end = body.end;
     await entry.save();
+
+    cache.clear(req.session.user.id);
 
     res.send(<EntriesSingleResponse>{
         entry: entry.toApiFormat(),
