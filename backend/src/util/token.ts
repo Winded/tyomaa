@@ -11,6 +11,15 @@ export function sign(payload: string | object): string {
     });
 }
 
-export function verify(token: string): string | object {
-    return jwt.verify(token, secret);
+export function verify(token: string): Promise<string | object> {
+    return new Promise((resolve, reject) => {
+        jwt.verify(token, secret, (err, data) => {
+            if(err) {
+                resolve(null);
+                return;
+            }
+
+            resolve(data);
+        });
+    });
 }

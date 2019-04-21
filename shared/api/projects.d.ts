@@ -1,6 +1,6 @@
 export interface Project {
     name: string;
-    totalTime: number;
+    totalTime: string;
 }
 
 export interface ProjectsGetResponse {
