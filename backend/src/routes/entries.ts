@@ -31,17 +31,13 @@ router.post('/', [
         return;
     }
 
-    let body: EntriesPostRequest = {
-        project: req.body.project,
-        start: new Date(req.body.start),
-        end: new Date(req.body.end),
-    };
+    let body = req.body as EntriesPostRequest;
 
     let entry = new TimeEntry();
     entry.userId = req.session.user.id;
     entry.project = body.project;
-    entry.start =body.start;
-    entry.end =body.end;
+    entry.start = new Date(body.start);
+    entry.end = new Date(body.end);
     await entry.save();
 
     cache.clear(req.session.user.id);
@@ -98,15 +94,11 @@ router.put('/:entryId', [
         return;
     }
 
-    let body: EntriesPostRequest = {
-        project: req.body.project,
-        start: new Date(req.body.start),
-        end: new Date(req.body.end),
-    };
+    let body = req.body as EntriesPostRequest;
 
     entry.project = body.project;
-    entry.start = body.start;
-    entry.end = body.end;
+    entry.start = new Date(body.start);
+    entry.end = new Date(body.end);
     await entry.save();
 
     cache.clear(req.session.user.id);

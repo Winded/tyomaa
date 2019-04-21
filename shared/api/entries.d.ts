@@ -6,8 +6,8 @@ export interface EntriesGetResponse {
 
 export interface EntriesPostRequest {
     project: string;
-    start: Date;
-    end: Date;
+    start: string;
+    end: string;
 }
 
 export interface EntriesPostResponse {

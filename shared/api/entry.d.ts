@@ -1,8 +1,8 @@
 export interface Entry {
     id: number,
     project: string,
-    start: Date,
-    end: Date,
+    start: string,
+    end: string,
 }
 
 export default Entry;
