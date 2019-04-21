@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
         return;
     }
     
-    let dbProjects = await sequelize.query('SELECT "project", SUM("end" - "start") as "totalTime" FROM "TimeEntries" WHERE "userId"=:userId GROUP BY "project"', {
+    let dbProjects = await sequelize.query('SELECT "project", SUM("end" - "start") as "totalTime" FROM "TimeEntries" WHERE "userId"=:userId GROUP BY "project" ORDER BY "project" ASC', {
         type: QueryTypes.SELECT,
         replacements: { userId: req.session.user.id },
     });

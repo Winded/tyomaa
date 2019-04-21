@@ -56,7 +56,7 @@ export class TimeEntry extends Model<TimeEntry> implements IApiFormattable<ApiEn
             id: this.id,
             project: this.project,
             start: this.start.toISOString(),
-            end: this.end.toISOString(),
+            end: this.end ? this.end.toISOString() : null,
         };
     }
 }

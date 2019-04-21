@@ -1,5 +1,5 @@
 import { TokenPostResponse, TokenPostRequest, TokenGetResponse } from "./auth";
-import { ClockGetResponse, ClockStartPostRequest, ClockStartPostResponse } from "./clock";
+import { ClockGetResponse, ClockStartPostRequest, ClockStartPostResponse, ClockStopPostResponse } from "./clock";
 import { EntriesGetResponse, EntriesGetRequest, EntriesPostRequest, EntriesPostResponse, EntriesSingleGetResponse, EntriesSinglePostRequest, EntriesSinglePostResponse } from "./entries";
 import { ProjectsGetResponse } from './projects';
 
@@ -11,7 +11,7 @@ export interface IApiClient {
 
     clockGet(): Promise<ClockGetResponse>;
     clockStartPost(body: ClockStartPostRequest): Promise<ClockStartPostResponse>;
-    clockStopPost(): Promise<void>;
+    clockStopPost(): Promise<ClockStopPostResponse>;
 
     entriesGet(query: EntriesGetRequest): Promise<EntriesGetResponse>;
     entriesPost(body: EntriesPostRequest): Promise<EntriesPostResponse>;

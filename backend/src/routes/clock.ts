@@ -4,7 +4,7 @@ import { body } from "express-validator/check";
 import { validateNameIdentifier } from "../util/identity";
 import { TimeEntry } from "../db/time-entry";
 import { Error as ApiError } from '../../../shared/api/error';
-import { ClockGetResponse, ClockStartPostRequest } from '../../../shared/api/clock';
+import { ClockGetResponse, ClockStartPostRequest, ClockStopPostResponse, ClockStartPostResponse } from '../../../shared/api/clock';
 import * as cache from "../util/cache";
 
 const router = Router();
@@ -52,7 +52,7 @@ router.post('/start', [
 
     cache.clear(req.session.user.id);
 
-    res.send(<ClockGetResponse>{
+    res.send(<ClockStartPostResponse>{
         entry: activeEntry.toApiFormat(),
     });
 });
@@ -76,7 +76,7 @@ router.post('/stop', async (req: Request, res: Response) => {
 
     cache.clear(req.session.user.id);
 
-    res.send(<ClockGetResponse>{
+    res.send(<ClockStopPostResponse>{
         entry: activeEntry.toApiFormat(),
     });
 });

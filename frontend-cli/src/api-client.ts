@@ -1,6 +1,6 @@
 import { IApiClient } from '../../shared/api/client';
 import { TokenGetResponse, TokenPostRequest, TokenPostResponse } from '../../shared/api/auth';
-import { ClockGetResponse, ClockStartPostRequest, ClockStartPostResponse } from '../../shared/api/clock';
+import { ClockGetResponse, ClockStartPostRequest, ClockStartPostResponse, ClockStopPostResponse } from '../../shared/api/clock';
 import { EntriesGetResponse, EntriesGetRequest, EntriesPostRequest, EntriesPostResponse, EntriesSingleGetResponse, EntriesSinglePostRequest, EntriesSinglePostResponse } from '../../shared/api/entries';
 import { ProjectsGetResponse } from '../../shared/api/projects';
 import * as rest from 'node-rest-client';
@@ -56,17 +56,53 @@ export class ApiClient implements IApiClient {
     }
 
     clockGet(): Promise<ClockGetResponse> {
-        throw new Error("Method not implemented.");
+        return new Promise((resolve, reject) => {
+            this.client.get(`${this.settings.host}/clock`, {
+                headers: this.headers(),
+                data: {},
+            }, (data, _response) => {
+                resolve(data);
+            }).on('error', (err) => {
+                reject(err);
+            });
+        });
     }
     clockStartPost(body: ClockStartPostRequest): Promise<ClockStartPostResponse> {
-        throw new Error("Method not implemented.");
+        return new Promise((resolve, reject) => {
+            this.client.post(`${this.settings.host}/clock/start`, {
+                headers: this.headers(),
+                data: body,
+            }, (data, _response) => {
+                resolve(data);
+            }).on('error', (err) => {
+                reject(err);
+            });
+        });
     }
-    clockStopPost(): Promise<void> {
-        throw new Error("Method not implemented.");
+    clockStopPost(): Promise<ClockStopPostResponse> {
+        return new Promise((resolve, reject) => {
+            this.client.post(`${this.settings.host}/clock/stop`, {
+                headers: this.headers(),
+                data: {},
+            }, (data, _response) => {
+                resolve(data);
+            }).on('error', (err) => {
+                reject(err);
+            });
+        });
     }
 
     entriesGet(query: EntriesGetRequest): Promise<EntriesGetResponse> {
-        throw new Error("Method not implemented.");
+        return new Promise((resolve, reject) => {
+            this.client.get(`${this.settings.host}/entries`, {
+                headers: this.headers(),
+                data: query,
+            }, (data, _response) => {
+                resolve(data);
+            }).on('error', (err) => {
+                reject(err);
+            });
+        });
     }
     entriesPost(body: EntriesPostRequest): Promise<EntriesPostResponse> {
         throw new Error("Method not implemented.");

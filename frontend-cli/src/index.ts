@@ -5,8 +5,15 @@ import * as fs from 'fs';
 import * as read from 'read';
 import { ApiSettings, ApiClient } from './api-client'
 import { IApiClient } from '../../shared/api/client';
+import * as moment from 'moment';
 
 interface CLISettings extends ApiSettings {}
+
+function pad(n: string, width: number, z: string): string {
+    z = z || '0';
+    n = n + '';
+    return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+}
 
 const inputPrompt = (prompt: string, silent: boolean = false): Promise<string> => new Promise((resolve, reject) => {
     read({ prompt: prompt, silent: silent, replace: '*' }, function (er, value) {
@@ -18,8 +25,19 @@ const inputPrompt = (prompt: string, silent: boolean = false): Promise<string> =
     });
 });
 
+function formatDuration(duration: moment.Duration): string {
+    return `${pad(duration.hours().toString(), 2, '0')}:${pad(duration.minutes().toString(), 2, '0')}:${pad(duration.seconds().toString(), 2, '0')}`;
+}
+
 function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettingsFunc: () => void): Vorpal {
     const prompt = new Vorpal();
+
+    const authValidation = (args: Vorpal.Args): string | boolean => {
+        if(!settings.host || !settings.token) {
+            return 'ERROR: No host or auth token found. Please login first.';
+        }
+        return true;
+    }
 
     prompt.command('auth status', 'Show authentication status')
         .action(async (_args) => {
@@ -52,6 +70,63 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
             saveSettingsFunc();
 
             prompt.log('Login successful');
+        });
+
+    prompt.command('clock status', 'Show current clock status')
+        .validate(authValidation)
+        .action(async (args) => {
+            try {
+                let result = await apiClient.clockGet();
+                if(result.entry) {
+                    let duration = moment.duration(moment().diff(moment(result.entry.start)));
+                    prompt.log(`Clock running for ${result.entry.project} (${formatDuration(duration)})`);
+                } else {
+                    prompt.log('Clock not running');
+                }
+            } catch(err) {
+                prompt.log(`ERROR: ${err}`);
+            }
+        });
+    prompt.command('clock start <project>', 'Start clock on specified project')
+        .validate(authValidation)
+        .action(async (args) => {
+            try {
+                let result = await apiClient.clockStartPost({
+                    project: args['project'],
+                });
+                prompt.log(`Clock started for project ${result.entry.project}`);
+            } catch(err) {
+                prompt.log(`ERROR: ${err}`);
+            }
+        });
+    prompt.command('clock stop', 'Stop active clock')
+        .validate(authValidation)
+        .action(async (_args) => {
+            try {
+                let result = await apiClient.clockStopPost();
+                prompt.log(`Clock stopped for project ${result.entry.project}`);
+            } catch(err) {
+                prompt.log(`ERROR: ${err}`);
+            }
+        });
+
+    prompt.command('entries list', 'Show entries')
+        .validate(authValidation)
+        .action(async (_args) => {
+            try {
+                let result = await apiClient.entriesGet({});
+                if(result.entries.length > 0) {
+                    result.entries.forEach(entry => {
+                        let start = moment(entry.start).format('DD.MM.YYYY HH:mm:SS');
+                        let end = entry.end ? moment(entry.end).format('DD.MM.YYYY HH:mm:SS') : 'None (ongoing)';
+                        prompt.log(`${entry.project} - ${start} - ${end}`);
+                    });
+                } else {
+                    prompt.log('No entries found');
+                }
+            } catch(err) {
+                prompt.log(`ERROR: ${err}`);
+            }
         });
 
     return prompt;
