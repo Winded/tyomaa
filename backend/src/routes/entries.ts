@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { TimeEntry } from '../db/time-entry';
-import { EntriesGetResponse, EntriesPostRequest, EntriesPostResponse, EntriesSingleResponse } from '../../../shared/api/entries';
+import { EntriesGetResponse, EntriesPostRequest, EntriesPostResponse, EntriesSingleGetResponse, EntriesSinglePostResponse, EntriesSinglePostRequest } from '../../../shared/api/entries';
 import { Error as ApiError } from '../../../shared/api/error';
 import { body, param } from 'express-validator/check';
 import { validateNameIdentifier } from '../util/identity';
@@ -67,7 +67,7 @@ router.get('/:entryId', [
         return;
     }
 
-    res.send(<EntriesSingleResponse>{
+    res.send(<EntriesSingleGetResponse>{
         entry: entry.toApiFormat(),
     });
 });
@@ -94,7 +94,7 @@ router.put('/:entryId', [
         return;
     }
 
-    let body = req.body as EntriesPostRequest;
+    let body = req.body as EntriesSinglePostRequest;
 
     entry.project = body.project;
     entry.start = new Date(body.start);
@@ -103,7 +103,7 @@ router.put('/:entryId', [
 
     cache.clear(req.session.user.id);
 
-    res.send(<EntriesSingleResponse>{
+    res.send(<EntriesSinglePostResponse>{
         entry: entry.toApiFormat(),
     });
 });

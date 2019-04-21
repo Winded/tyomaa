@@ -7,3 +7,4 @@ export interface ClockGetResponse {
 export interface ClockStartPostRequest {
     project: string;
 }
+export interface ClockStartPostResponse extends ClockGetResponse {}
