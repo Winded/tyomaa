@@ -6,6 +6,7 @@ import * as read from 'read';
 import { ApiSettings, ApiClient } from './api-client'
 import { IApiClient } from '../../shared/api/client';
 import * as moment from 'moment';
+import { table } from 'table';
 
 interface CLISettings extends ApiSettings {}
 
@@ -116,13 +117,128 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
             try {
                 let result = await apiClient.entriesGet({});
                 if(result.entries.length > 0) {
+                    let uiData = [
+                        ['Entry ID', 'Project name', 'Start time', 'End time'],
+                    ];
                     result.entries.forEach(entry => {
                         let start = moment(entry.start).format('DD.MM.YYYY HH:mm:SS');
                         let end = entry.end ? moment(entry.end).format('DD.MM.YYYY HH:mm:SS') : 'None (ongoing)';
-                        prompt.log(`${entry.project} - ${start} - ${end}`);
+                        uiData.push([entry.id.toString(), entry.project, start, end]);
                     });
+                    prompt.log(table(uiData));
                 } else {
                     prompt.log('No entries found');
+                }
+            } catch(err) {
+                prompt.log(`ERROR: ${err}`);
+            }
+        });
+    prompt.command('entries create <project> <start> <end>', 'Create a new entry')
+        .validate(authValidation)
+        .validate((args) => {
+            let d1 = new Date(args['start']);
+            let d2 = new Date(args['end']);
+            if(!isNaN(d1.getTime())) {
+                return 'ERROR: Invalid start date';
+            } else if(!isNaN(d2.getTime())) {
+                return 'ERROR: Invalid end date';
+            } else if(d2.getTime() > d1.getTime()) {
+                return 'ERROR: End date is before start date';
+            }
+
+            return true;
+        })
+        .action(async (args) => {
+            let project = args['project'];
+            let start = new Date(args['start']).toISOString();
+            let end = new Date(args['end']).toISOString();
+
+            try {
+                await apiClient.entriesPost({
+                    project: project,
+                    start: start,
+                    end: end,
+                });
+                prompt.log('Entry created successfully');
+            } catch(err) {
+                prompt.log(`ERROR: ${err}`);
+            }
+        });
+    prompt.command('entries view <entryid>', 'Show a specific entry')
+        .validate(authValidation)
+        .validate((args) => {
+            let entryId = parseInt(args['entryid']);
+            if(isNaN(entryId) || entryId < 1) {
+                return 'Entry ID must be a number higher or equal to 1';
+            }
+
+            return true;
+        })
+        .action(async (args) => {
+            let entryId = parseInt(args['entryid']);
+
+            try {
+                let result = await apiClient.entriesSingleGet(entryId);
+                if(!result.entry) {
+                    prompt.log('Entry not found');
+                    return;
+                }
+
+                let start = moment(result.entry.start).format('DD.MM.YYYY HH:mm:SS');
+                let end = result.entry.end ? moment(result.entry.end).format('DD.MM.YYYY HH:mm:SS') : 'None (ongoing)';
+                prompt.log(table([
+                    ['Entry ID', 'Project name', 'Start time', 'End time'],
+                    [result.entry.id, result.entry.project, start, end],
+                ]));
+            } catch(err) {
+                prompt.log(`ERROR: ${err}`);
+            }
+        });
+    prompt.command('entries edit <entryid>', 'Modify an existing entry')
+        .option('-p,--project <project>', 'Change the project of the entry')
+        .option('-s,--start <start>', 'Change the start time of the entry')
+        .option('-e,--end <end>', 'Change the end time of the entry')
+        .validate(authValidation)
+        .action(async (args) => {
+            let entryId = parseInt(args['entryid']);
+
+            try {
+                let result = await apiClient.entriesSingleGet(entryId);
+                if(!result.entry) {
+                    prompt.log('ERROR: Entry does not exist');
+                    return;
+                }
+
+                let project = args.options['project'] || result.entry.project;
+                let start = args.options['start'] ? new Date(args['start']).toISOString() : result.entry.start;
+                let end = args.options['end'] ? new Date(args['end']).toISOString() : result.entry.end;
+                await apiClient.entriesSinglePost(entryId, {
+                    project: project,
+                    start: start,
+                    end: end,
+                });
+                prompt.log('Entry modified successfully');
+            } catch(err) {
+                prompt.log(`ERROR: ${err}`);
+            }
+        });
+
+    prompt.command('projects list', 'Show projects')
+        .validate(authValidation)
+        .action(async (_args) => {
+            try {
+                let result = await apiClient.projectsGet();
+                if(result.projects.length > 0) {
+                    let uiData = [
+                        ['Project name', 'Total time'],
+                    ];
+                    result.projects.forEach(project => {
+                        let totalTime = formatDuration(moment.duration(project.totalTime));
+                        uiData.push([project.name, totalTime]);
+                    });
+                    prompt.log(table(uiData));
+                } else {
+                    prompt.log('No projects found');
                 }
             } catch(err) {
                 prompt.log(`ERROR: ${err}`);

@@ -105,17 +105,53 @@ export class ApiClient implements IApiClient {
         });
     }
     entriesPost(body: EntriesPostRequest): Promise<EntriesPostResponse> {
-        throw new Error("Method not implemented.");
+        return new Promise((resolve, reject) => {
+            this.client.post(`${this.settings.host}/entries`, {
+                headers: this.headers(),
+                data: body,
+            }, (data, _response) => {
+                resolve(data);
+            }).on('error', (err) => {
+                reject(err);
+            });
+        });
     }
     entriesSingleGet(entryId: number): Promise<EntriesSingleGetResponse> {
-        throw new Error("Method not implemented.");
+        return new Promise((resolve, reject) => {
+            this.client.get(`${this.settings.host}/entries/${entryId}`, {
+                headers: this.headers(),
+                data: {},
+            }, (data, _response) => {
+                resolve(data);
+            }).on('error', (err) => {
+                reject(err);
+            });
+        });
     }
     entriesSinglePost(entryId: number, body: EntriesSinglePostRequest): Promise<EntriesSinglePostResponse> {
-        throw new Error("Method not implemented.");
+        return new Promise((resolve, reject) => {
+            this.client.post(`${this.settings.host}/entries/${entryId}`, {
+                headers: this.headers(),
+                data: body,
+            }, (data, _response) => {
+                resolve(data);
+            }).on('error', (err) => {
+                reject(err);
+            });
+        });
     }
 
     projectsGet(): Promise<ProjectsGetResponse> {
-        throw new Error("Method not implemented.");
+        return new Promise((resolve, reject) => {
+            this.client.get(`${this.settings.host}/projects`, {
+                headers: this.headers(),
+                data: {},
+            }, (data, _response) => {
+                resolve(data);
+            }).on('error', (err) => {
+                reject(err);
+            });
+        });
     }
 
     private headers(): object {
