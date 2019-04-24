@@ -25,7 +25,9 @@ router.get('/', async (req, res) => {
 router.post('/', [
     body('project').exists().custom(validateNameIdentifier),
     body('start').exists().isISO8601(),
-    body('end').exists().isISO8601(),
+    body('end').exists().isISO8601().custom((end, { req }) => {
+        return new Date(end).getTime() > new Date(req.body.start).getTime();
+    }).withMessage('End time must be later than start time'),
 ], async (req: Request, res: Response) => {
     if(!validateInput(req, res)) {
         return;
@@ -75,7 +77,9 @@ router.get('/:entryId', [
 router.put('/:entryId', [
     body('project').exists().custom(validateNameIdentifier),
     body('start').exists().isISO8601(),
-    body('end').exists().isISO8601(),
+    body('end').exists().isISO8601().custom((end, { req }) => {
+        return new Date(end).getTime() > new Date(req.body.start).getTime();
+    }).withMessage('End time must be later than start time'),
 ], async (req: Request, res: Response, _next) => {
     if(!validateInput(req, res)) {
         return;
