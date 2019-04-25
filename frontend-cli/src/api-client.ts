@@ -14,6 +14,10 @@ const defaultHeaders = {
     'Content-Type': 'application/json',
 };
 
+function resolveResponse(data, response) {
+    
+}
+
 export class ApiClient implements IApiClient {
     private settings: ApiSettings;
     private client: rest.Client;
@@ -30,124 +34,68 @@ export class ApiClient implements IApiClient {
         this.settings.token = value;
     }
 
-    authTokenGet(): Promise<TokenGetResponse> {
-        return new Promise((resolve, reject) => {
-            this.client.get(`${this.settings.host}/auth/token`, {
-                headers: this.headers(),
-                data: {},
-            }, (data, _response) => {
-                resolve(data);
-            }).on('error', (err) => {
-                reject(err);
-            });
-        });
+    async authTokenGet(): Promise<TokenGetResponse> {
+        return await this.getRequest('/auth/token');
     }
-    authTokenPost(body: TokenPostRequest): Promise<TokenPostResponse> {
+    async authTokenPost(body: TokenPostRequest): Promise<TokenPostResponse> {
+        return await this.postRequest('/auth/token', body);
+    }
+
+    async clockGet(): Promise<ClockGetResponse> {
+        return await this.getRequest('/clock');
+    }
+    async clockStartPost(body: ClockStartPostRequest): Promise<ClockStartPostResponse> {
+        return await this.postRequest('/clock/start', body);
+    }
+    async clockStopPost(): Promise<ClockStopPostResponse> {
+        return await this.postRequest('/clock/stop');
+    }
+
+    async entriesGet(query: EntriesGetRequest): Promise<EntriesGetResponse> {
+        return await this.getRequest('/entries', query);
+    }
+    async entriesPost(body: EntriesPostRequest): Promise<EntriesPostResponse> {
+        return await this.postRequest('/entries', body);
+    }
+    async entriesSingleGet(entryId: number): Promise<EntriesSingleGetResponse> {
+        return await this.getRequest(`/entries/${entryId}`);
+    }
+    async entriesSinglePost(entryId: number, body: EntriesSinglePostRequest): Promise<EntriesSinglePostResponse> {
+        return await this.postRequest(`/entries/${entryId}`, body);
+    }
+
+    async projectsGet(): Promise<ProjectsGetResponse> {
+        return await this.getRequest(`/projects`);
+    }
+
+    private getRequest(url: string, data: any = {}): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.client.post(`${this.settings.host}/auth/token`, {
+            this.client.get(`${this.settings.host}${url}`, {
                 headers: this.headers(),
-                data: body,
-            }, (data, _response) => {
-                resolve(data);
+                data: data,
+            }, (data, response) => {
+                if(Math.floor(response.statusCode / 100) == 2) {
+                    resolve(data);
+                } else {
+                    reject(data);
+                }
             }).on('error', (err) => {
                 reject(err);
             });
         });
     }
 
-    clockGet(): Promise<ClockGetResponse> {
+    private postRequest(url: string, data: any = {}): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.client.get(`${this.settings.host}/clock`, {
+            this.client.post(`${this.settings.host}${url}`, {
                 headers: this.headers(),
-                data: {},
-            }, (data, _response) => {
-                resolve(data);
-            }).on('error', (err) => {
-                reject(err);
-            });
-        });
-    }
-    clockStartPost(body: ClockStartPostRequest): Promise<ClockStartPostResponse> {
-        return new Promise((resolve, reject) => {
-            this.client.post(`${this.settings.host}/clock/start`, {
-                headers: this.headers(),
-                data: body,
-            }, (data, _response) => {
-                resolve(data);
-            }).on('error', (err) => {
-                reject(err);
-            });
-        });
-    }
-    clockStopPost(): Promise<ClockStopPostResponse> {
-        return new Promise((resolve, reject) => {
-            this.client.post(`${this.settings.host}/clock/stop`, {
-                headers: this.headers(),
-                data: {},
-            }, (data, _response) => {
-                resolve(data);
-            }).on('error', (err) => {
-                reject(err);
-            });
-        });
-    }
-
-    entriesGet(query: EntriesGetRequest): Promise<EntriesGetResponse> {
-        return new Promise((resolve, reject) => {
-            this.client.get(`${this.settings.host}/entries`, {
-                headers: this.headers(),
-                data: query,
-            }, (data, _response) => {
-                resolve(data);
-            }).on('error', (err) => {
-                reject(err);
-            });
-        });
-    }
-    entriesPost(body: EntriesPostRequest): Promise<EntriesPostResponse> {
-        return new Promise((resolve, reject) => {
-            this.client.post(`${this.settings.host}/entries`, {
-                headers: this.headers(),
-                data: body,
-            }, (data, _response) => {
-                resolve(data);
-            }).on('error', (err) => {
-                reject(err);
-            });
-        });
-    }
-    entriesSingleGet(entryId: number): Promise<EntriesSingleGetResponse> {
-        return new Promise((resolve, reject) => {
-            this.client.get(`${this.settings.host}/entries/${entryId}`, {
-                headers: this.headers(),
-                data: {},
-            }, (data, _response) => {
-                resolve(data);
-            }).on('error', (err) => {
-                reject(err);
-            });
-        });
-    }
-    entriesSinglePost(entryId: number, body: EntriesSinglePostRequest): Promise<EntriesSinglePostResponse> {
-        return new Promise((resolve, reject) => {
-            this.client.post(`${this.settings.host}/entries/${entryId}`, {
-                headers: this.headers(),
-                data: body,
-            }, (data, _response) => {
-                resolve(data);
-            }).on('error', (err) => {
-                reject(err);
-            });
-        });
-    }
-
-    projectsGet(): Promise<ProjectsGetResponse> {
-        return new Promise((resolve, reject) => {
-            this.client.get(`${this.settings.host}/projects`, {
-                headers: this.headers(),
-                data: {},
-            }, (data, _response) => {
-                resolve(data);
+                data: data,
+            }, (data, response) => {
+                if(Math.floor(response.statusCode / 100) == 2) {
+                    resolve(data);
+                } else {
+                    reject(data);
+                }
             }).on('error', (err) => {
                 reject(err);
             });

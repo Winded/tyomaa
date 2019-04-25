@@ -74,7 +74,7 @@ router.get('/:entryId', [
     });
 });
 
-router.put('/:entryId', [
+router.post('/:entryId', [
     body('project').exists().custom(validateNameIdentifier),
     body('start').exists().isISO8601(),
     body('end').exists().isISO8601().custom((end, { req }) => {

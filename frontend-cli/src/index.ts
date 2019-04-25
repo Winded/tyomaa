@@ -30,6 +30,19 @@ function formatDuration(duration: moment.Duration): string {
     return `${pad(duration.hours().toString(), 2, '0')}:${pad(duration.minutes().toString(), 2, '0')}:${pad(duration.seconds().toString(), 2, '0')}`;
 }
 
+function printApiError(prompt: Vorpal, error: any) {
+    if(error instanceof Object && 'message' in error) {
+        prompt.log(`ERROR: ${error.message}`);
+    } else if(error instanceof Object && 'errors' in error) {
+        // TODO static typing for validation errors
+        error.errors.forEach(e => {
+            prompt.log(`ERROR: ${e.param}: ${e.msg}`);
+        });
+    } else {
+        prompt.log(`ERROR: Unknown error occurred.`);
+    }
+}
+
 function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettingsFunc: () => void): Vorpal {
     const prompt = new Vorpal();
 
@@ -85,7 +98,7 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
                     prompt.log('Clock not running');
                 }
             } catch(err) {
-                prompt.log(`ERROR: ${err}`);
+                printApiError(prompt, err);
             }
         });
     prompt.command('clock start <project>', 'Start clock on specified project')
@@ -97,7 +110,7 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
                 });
                 prompt.log(`Clock started for project ${result.entry.project}`);
             } catch(err) {
-                prompt.log(`ERROR: ${err}`);
+                printApiError(prompt, err);
             }
         });
     prompt.command('clock stop', 'Stop active clock')
@@ -107,7 +120,7 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
                 let result = await apiClient.clockStopPost();
                 prompt.log(`Clock stopped for project ${result.entry.project}`);
             } catch(err) {
-                prompt.log(`ERROR: ${err}`);
+                printApiError(prompt, err);
             }
         });
 
@@ -130,7 +143,7 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
                     prompt.log('No entries found');
                 }
             } catch(err) {
-                prompt.log(`ERROR: ${err}`);
+                printApiError(prompt, err);
             }
         });
     prompt.command('entries create <project> <start> <end>', 'Create a new entry')
@@ -161,7 +174,7 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
                 });
                 prompt.log('Entry created successfully');
             } catch(err) {
-                prompt.log(`ERROR: ${err}`);
+                printApiError(prompt, err);
             }
         });
     prompt.command('entries view <entryid>', 'Show a specific entry')
@@ -191,7 +204,7 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
                     [result.entry.id, result.entry.project, start, end],
                 ]));
             } catch(err) {
-                prompt.log(`ERROR: ${err}`);
+                printApiError(prompt, err);
             }
         });
     prompt.command('entries edit <entryid>', 'Modify an existing entry')
@@ -219,7 +232,7 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
                 });
                 prompt.log('Entry modified successfully');
             } catch(err) {
-                prompt.log(`ERROR: ${err}`);
+                printApiError(prompt, err);
             }
         });
 
@@ -241,7 +254,7 @@ function createPrompt(settings: CLISettings, apiClient: IApiClient, saveSettings
                     prompt.log('No projects found');
                 }
             } catch(err) {
-                prompt.log(`ERROR: ${err}`);
+                printApiError(prompt, err);
             }
         });
 
