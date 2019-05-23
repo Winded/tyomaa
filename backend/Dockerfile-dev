@@ -1,12 +1,3 @@
-FROM node:10
+FROM golang
 
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-RUN npm install
-
-COPY . .
-
-EXPOSE 80
-
-CMD ["npm", "run", "debug"]
+ENTRYPOINT go run /go/src/github.com/winded/tyomaa/backend/main.go

@@ -1,18 +1,18 @@
 version: '3.6'
 services:
-  tyomaa-frontend:
-    image: winded/tyomaa-frontend:latest
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-dev
-    ports:
-     - "8000:80"
-    environment:
-      API_ENDPOINT: "http://localhost:9000/api"
-    volumes:
-     - ./frontend/src:/usr/src/app/src:rw
-     - ./frontend/static:/usr/src/app/static:rw
-     - ./frontend/dist:/usr/src/app/dist:rw
+  #tyomaa-frontend:
+  #  image: winded/tyomaa-frontend:latest
+  #  build:
+  #    context: ./frontend
+  #    dockerfile: Dockerfile-dev
+  #  ports:
+  #   - "8000:80"
+  #  environment:
+  #    API_ENDPOINT: "http://localhost:9000/api"
+  #  volumes:
+  #   - ./frontend/src:/usr/src/app/src:rw
+  #   - ./frontend/static:/usr/src/app/static:rw
+  #   - ./frontend/dist:/usr/src/app/dist:rw
   tyomaa-backend:
     image: winded/tyomaa-backend:latest
     build:
@@ -23,10 +23,7 @@ services:
     environment:
      - DB_HOST=db
     volumes:
-     - ./shared:/usr/src/shared:ro
-     - ./backend/src:/usr/src/app/src:rw
-     - ./backend/tests:/usr/src/app/tests:rw
-     - ./backend/dist:/usr/src/app/dist:rw
+     - $GOPATH:/go:rw
 
   db:
     image: postgres:alpine
