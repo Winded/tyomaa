@@ -144,13 +144,11 @@ func GetCommands(settings settings.Settings, apiClient *client.ApiClient, inputR
 					Usage: "Show current clock status",
 					Action: func(c *cli.Context) error {
 						response, err := apiClient.ClockGet()
-						if err != nil {
-							return err
-						}
-
-						if response.Entry == nil {
+						if err == api.ClockActiveEntryNotFoundErr {
 							fmt.Println("Clock not running")
 							return nil
+						} else if err != nil {
+							return err
 						}
 
 						duration := time.Since(response.Entry.Start)
@@ -347,6 +345,30 @@ func GetCommands(settings settings.Settings, apiClient *client.ApiClient, inputR
 						}
 
 						fmt.Println("Entry modified successfully")
+						return nil
+					},
+				},
+				cli.Command{
+					Name:      "delete",
+					Usage:     "Delete an existing entry",
+					ArgsUsage: "<entryid>",
+					Action: func(c *cli.Context) error {
+						sEntryID := c.Args().Get(0)
+						if sEntryID == "" {
+							return errors.New("Entry ID arugment missing")
+						}
+
+						entryID, err := strconv.Atoi(sEntryID)
+						if err != nil {
+							return err
+						}
+
+						_, err = apiClient.EntriesSingleDelete(uint(entryID))
+						if err != nil {
+							return err
+						}
+
+						fmt.Println("Entry deleted successfully")
 						return nil
 					},
 				},

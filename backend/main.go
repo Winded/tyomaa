@@ -21,8 +21,16 @@ func main() {
 	db.AutoMigrate(dbConn)
 
 	app := mux.NewRouter()
+	app.Use(middleware.AccessControl)
 	app.Use(middleware.Json)
 	app.Use(middleware.TokenSession)
+
+	app.Methods(http.MethodOptions).HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", util.EnvOrDefault("ALLOW_ORIGIN", "*"))
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type,X-Access-Token")
+		w.Header().Set("Access-Control-Allow-Methods", "GET,POST,DELETE")
+		w.Header().Set("Allow", "GET,POST,DELETE")
+	})
 
 	baseRouter := app.PathPrefix(util.EnvOrDefault("ROOT_URL", "")).Subrouter()
 	baseRouter.Use(middleware.Authentication)

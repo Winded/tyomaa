@@ -1,0 +1,270 @@
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+body {
+    font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #3E3E3E;
+    color: #DFDFDF;
+}
+ 
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+.dropdown .dropdown-content {
+    display: none;
+    position: absolute;
+    transform: translate(-65%);
+    min-width: 160px;
+    z-index: 1;
+}
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.loading-icon {
+    font-size: 1.5em;
+}
+
+.btn {
+    position: relative;
+    margin: 5px;
+    padding: 5px 10px;
+    border: 0;
+    box-shadow: 0 0 3px black;
+    color: #FDFDFDFD;
+    font-size: 1.1em;
+    cursor: pointer;
+    min-width: 80px;
+}
+.btn-neutral {
+    background-color: #4d4d4d;
+}
+    .btn-neutral:hover {
+        background-color: #595959;
+    }
+.btn-green {
+    background-color: #5ca35c;
+}
+    .btn-green:hover {
+        background-color: #6cac6c;
+    }
+.btn-red {
+    background-color: #ff3333;
+}
+    .btn-red:hover {
+        background-color: #ff4d4d;
+    }
+
+.btn-loading {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.btn-loading i {
+    position: absolute;
+    top: calc(50% - 8px);
+    left: calc(50% - 8px);
+}
+
+.modal-background {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 2;
+}
+.modal-background.solid {
+    background-color: #2F2F2F;
+}
+.modal-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-color: #3E3E3E;
+    padding: 15px;
+    box-shadow: 0 0 10px black;
+}
+
+.modal-container.error {
+    background-color: #cc0000;
+}
+
+.modal-container .title {
+    margin-top: 5px;
+    margin-bottom: 0.5em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid #4d4d4d;
+    font-size: 1.4em;
+}
+
+.error-msg {
+    background-color: #cc0000;
+    padding: 1em;
+    border-left: 5px solid #ff3333;
+    margin-bottom: 5px;
+}
+
+.text-input {
+    display: block;
+    background-color: #4d4d4d;
+    border: 1px solid #666666;
+    color: #DFDFDF;
+    padding: 3px;
+    margin: 5px;
+    width: calc(100% - 5px * 2);
+}
+.text-input:focus {
+    border-color: #808080;
+}
+
+.date-input {
+    color: #DFDFDF;
+    background: transparent;
+    border: 0;
+    width: 1.7em;
+}
+.date-input.long {
+    width: 2.5em;
+}
+.date-input-separator {
+    display: inline-block;
+    color: #b3b3b3;
+    width: 0.4em;
+    text-align: center;
+}
+.date-input-separator.long {
+    width: 1em;
+}
+
+.input-label {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.button-row {
+    padding: 5px;
+}
+.button-row:last-child {
+    padding-bottom: 0;
+}
+.button-row .btn {
+    float: right;
+}
+.button-row .btn:first-child {
+    margin-right: 0;
+}
+
+.modal-narrow {
+    width: 400px;
+}
+
+.container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1000px;
+}
+
+.nav-background {
+    background-color: #3E6E3E;
+    box-shadow: 0 0 7px black;
+    width: 100%;
+    z-index: 1;
+}
+.nav {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.user-dropdown {
+    float: right;
+    padding: 10px;
+    cursor: pointer;
+}
+.user-dropdown .dropdown-content {
+    box-shadow: 0 0 15px black;
+    background-color: #3E3E3E;
+}
+.user-dropdown .dropdown-content a {
+    color: #FDFDFDFD;
+    display: block;
+    text-decoration: none;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+    .user-dropdown .dropdown-content a:hover {
+        background-color: #595959;
+    }
+
+.clock {
+    float: left;
+}
+.clock-btn {
+    float: left;
+    margin: 8px;
+}
+.clock-info {
+    float: left;
+    margin: 4px;
+}
+    .clock-info p {
+        font-size: 0.8em;
+        margin: 0;
+    }
+    .clock-info a {
+        color: inherit;
+        text-decoration: underline;
+    } 
+
+.tbl {
+    width: 100%;
+    border-collapse: collapse;
+}
+.tbl > thead tr {
+    border-bottom: solid 2px #666666;
+}
+.tbl > thead th {
+    text-align: left;
+    padding: 0.25em 0.1em;
+}
+.tbl > tbody tr {
+    border-bottom: solid 1px #595959;
+}
+.tbl > tbody tr:nth-child(odd) {
+    background-color: #404040;
+}
+.tbl > tbody td {
+    padding: 0.1em 0.1em;
+}
+
+.icon-column {
+    width: 3em;
+}
+.icon-column a {
+    padding-right: 0.4em;
+    text-decoration: none;
+    color: #bfbfbf;
+}
+.icon-column a:hover {
+    text-decoration: none;
+    color: #dfdfdf;
+}

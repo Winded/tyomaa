@@ -1,7 +1,7 @@
 package api
 
 type ClockGetResponse struct {
-	Entry *TimeEntry `json:"entry"`
+	Entry TimeEntry `json:"entry"`
 }
 
 type ClockStartPostRequest struct {

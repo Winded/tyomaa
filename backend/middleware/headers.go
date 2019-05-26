@@ -2,7 +2,16 @@ package middleware
 
 import (
 	"net/http"
+
+	"github.com/winded/tyomaa/backend/util"
 )
+
+func AccessControl(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", util.EnvOrDefault("ALLOW_ORIGIN", "*"))
+		next.ServeHTTP(w, r)
+	})
+}
 
 // Json middleware sets the response's content type to application/json
 func Json(next http.Handler) http.Handler {

@@ -1,3 +1,7 @@
+# Requires https://github.com/canthefason/go-watcher
+
 FROM golang
 
-ENTRYPOINT go run /go/src/github.com/winded/tyomaa/backend/main.go
+WORKDIR /go/src/github.com/winded/tyomaa/backend
+
+ENTRYPOINT /go/bin/watcher

@@ -24,14 +24,15 @@ func ClockRoutes(router *mux.Router) {
 
 		var activeEntry db.TimeEntry
 		err := db.Instance.First(&activeEntry, `user_id = ? AND "end" IS NULL`, ctx.User.ID).Error
-		if err != nil && !gorm.IsRecordNotFoundError(err) {
+		if gorm.IsRecordNotFoundError(err) {
+			panic(api.ClockActiveEntryNotFoundErr)
+		} else if err != nil {
 			panic(err)
 		}
 
 		var response api.ClockGetResponse
 		if activeEntry.ID != 0 {
-			apiEntry := activeEntry.ToApiFormat()
-			response.Entry = &apiEntry
+			response.Entry = activeEntry.ToApiFormat()
 		}
 
 		json.NewEncoder(w).Encode(response)
@@ -74,7 +75,7 @@ func ClockRoutes(router *mux.Router) {
 		var activeEntry db.TimeEntry
 		err := db.Instance.Where(`user_id = ? AND "end" IS NULL`, ctx.User.ID).First(&activeEntry).Error
 		if gorm.IsRecordNotFoundError(err) {
-			panic(api.Error(http.StatusBadRequest, "Active entry does not exist"))
+			panic(api.ClockActiveEntryNotFoundErr)
 		} else if err != nil {
 			panic(err)
 		}

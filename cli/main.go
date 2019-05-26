@@ -5,12 +5,14 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/chzyer/readline"
 	"github.com/urfave/cli"
 	"github.com/winded/tyomaa/cli/commands"
 	"github.com/winded/tyomaa/cli/settings"
 	"github.com/winded/tyomaa/shared/api/client"
+	"github.com/winded/tyomaa/shared/api/client/standard_http_client"
 )
 
 func saveSettings(s settings.Settings) {
@@ -28,7 +30,7 @@ func main() {
 		panic(err)
 	}
 
-	apiClient := client.NewApiClient(cliSettings.Api)
+	apiClient := client.NewApiClient(standard_http_client.New(time.Second*10), cliSettings.Api)
 	inputReader, err := readline.New("")
 	if err != nil {
 		panic(err)

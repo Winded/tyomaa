@@ -1,5 +1,9 @@
 package api
 
+var (
+	ClockActiveEntryNotFoundErr = Error(StatusNotFound, "Active entry does not exist")
+)
+
 type ApiError struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`

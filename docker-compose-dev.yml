@@ -1,18 +1,17 @@
 version: '3.6'
 services:
-  #tyomaa-frontend:
-  #  image: winded/tyomaa-frontend:latest
-  #  build:
-  #    context: ./frontend
-  #    dockerfile: Dockerfile-dev
-  #  ports:
-  #   - "8000:80"
-  #  environment:
-  #    API_ENDPOINT: "http://localhost:9000/api"
-  #  volumes:
-  #   - ./frontend/src:/usr/src/app/src:rw
-  #   - ./frontend/static:/usr/src/app/static:rw
-  #   - ./frontend/dist:/usr/src/app/dist:rw
+  tyomaa-frontend:
+    image: winded/tyomaa-frontend:latest
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-dev
+    ports:
+     - "8000:80"
+    environment:
+      API_ENDPOINT: "http://localhost:9000"
+      OUTPUT_DIR: "/output"
+    volumes:
+     - $GOPATH:/go:rw
   tyomaa-backend:
     image: winded/tyomaa-backend:latest
     build:

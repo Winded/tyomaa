@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Tyomaa</title>
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ static "/css/style.css" }}" />
+    </head>
+    <body>
+        <noscript>
+            <div class="modal-background solid">
+                <div class="modal-container error">
+                    <p>This site requires JavaScript to work.</p>
+                </div>
+            </div>
+        </noscript>
+
+        <noscript> <style> .jsonly { display: none !important; } </style> </noscript>
+        <div id="loading-indicator" class="jsonly modal-background solid">
+            <div class="modal-container">
+                <p><i class="loading-icon fa fa-spinner fa-spin"></i> Loading...</p>
+            </div>
+        </div>
+
+        <div id="app"></div>
+
+        <script type="text/javascript">
+            window.TEMPLATES = {
+                login: `{{ view "/login.html" }}`,
+                content: `{{ view "/content.html" }}`,
+                entry_table: `{{ view "/entry_table.html" }}`,
+                nav: `{{ view "/nav.html" }}`,
+                clock: `{{ view "/clock.html" }}`,
+                modal_container: `{{ view "/modal_container.html" }}`,
+
+                project_name_modal: `{{ view "/modals/project_name.html" }}`,
+                new_entry_modal: `{{ view "/modals/new_entry.html" }}`,
+                edit_entry_modal: `{{ view "/modals/edit_entry.html" }}`,
+                delete_entry_modal: `{{ view "/modals/delete_entry.html" }}`, 
+
+                error_message_widget: `{{ view "/widgets/error_message.html" }}`,
+                datetime_widget: `{{ view "/widgets/datetime.html" }}`,
+                action_cancel_widget: `{{ view "/widgets/action_cancel.html" }}`,
+            };
+        </script>
+
+        <script type="text/javascript">
+            window.API_ENDPOINT = "{{ .ApiEndpoint }}";
+        </script>
+        <script src="{{ static "/js/bundle.js"}}"></script>
+    </body>
+</html>

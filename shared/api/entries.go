@@ -21,3 +21,4 @@ type EntriesSingleGetResponse struct {
 
 type EntriesSinglePostRequest EntriesPostRequest
 type EntriesSinglePostResponse EntriesPostResponse
+type EntriesSingleDeleteResponse EntriesPostResponse

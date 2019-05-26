@@ -1,12 +1,7 @@
-FROM node:10
+# Requires https://github.com/canthefason/go-watcher
 
-WORKDIR /usr/src/app
+FROM golang
 
-COPY package*.json ./
-RUN npm install
+WORKDIR /go/src/github.com/winded/tyomaa/frontend/generator
 
-COPY . .
-
-EXPOSE 80
-
-CMD ["npm", "run", "debug"]
+ENTRYPOINT /go/bin/watcher --watch github.com/winded/tyomaa/frontend/ --debug 
